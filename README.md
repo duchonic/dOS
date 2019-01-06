@@ -4,10 +4,10 @@ manage time with help of somem blocks
 # blocks
 
 colors:
-- yellow
-- red
-- grey
-- black
+- yellow (learn)
+- red (work)
+- grey (free time)
+- black (sleep)
 
 size:
 - one (30min)
@@ -22,7 +22,8 @@ size:
 # gui (front)
 
 ## pretotype
-qt5 for pretotype
+- playing with tkinter
+- qt5 for pretotype
 
 # backend
 
