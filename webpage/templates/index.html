@@ -1,12 +1,24 @@
 <html>
    <head>
-     <script type=text/javascript src="{{
- url_for('static', filename='hello.js') }}"></script>
+     <script type=text/javascript src="{{ url_for('static', filename='hello.js') }}"></script>
    </head>
 
+   <h1>h1 heading</h1>
+   <h2>h2 heading</h2>
+   <h3>h3 heading</h3>
+
    <body>
+
+      <h4>h4 heading</h4>
+      <h5>h5 heading</h5>
+
+      <input type="checkbox" onclick="check1()"/><br>
+      <input type="checkbox" onclick="check2()"/><br>
+      <input type="email" value="input@test.io"/><br>
+      
       <input type = "button" onclick = "sayHello()" value = "Hello" />
       <input type = "button" onclick = "sayCheck()" value = "Check" />
       <input type = "button" onclick = "sayBye()" value = "Bye" />
    </body>
+
 </html>

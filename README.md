@@ -24,9 +24,59 @@ size:
 ## pretotype
 - playing with tkinter
 - qt5 for pretotype
+- flask
 
 # backend
 
 ## pretotype
 python3 for code
 
+### data
+#### version 1
+the data is stored in data.json
+- 2019, 3 -> year, calendarweek
+- 0-167 -> hours per week
+
+```
+{
+  "(2019, 3))": {
+    "0": 0,
+    "1": 0,
+    ...
+    "167": 2
+  },
+  "(2019, 4)": {
+    "0": 1,
+    "1": 2,
+    ...
+    "167": 0
+  }
+```
+#### version 2
+year, calendarweek, weekhour
+```
+{
+  2019: {
+    3:{
+      0: 0,
+      1: 0,
+      ...
+      167: 2
+    },
+    4:{
+      0: 0,
+      1: 0,
+      ...
+      167: 2
+      }  
+    }
+  },
+  2018: {
+    5:{
+      0: 1,
+      1: 2,
+      ...
+      167: 0  
+    }
+  }
+```

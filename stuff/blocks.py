@@ -11,12 +11,10 @@ class Block:
     col = 0
     size = 0
 
-
     def __init__(self, col, size):
 
         self.col = col
         self.size = size
-
 
     def colorOfBlock(self):
         return self.COLORS[self.col]
