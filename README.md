@@ -20,16 +20,22 @@ size:
 - sixteen (8hrs)
 
 # gui (front)
+## pretotype
+- qt5
+![pic](doc/qt5_pretotype.png)
+
+## prototype
+- flask webpage
+- metrics and statistics
+
+# data (back)
 
 ## pretotype
-- playing with tkinter
-- qt5 for pretotype
-- flask
+- python3 for code and local data.json
 
-# backend
-
-## pretotype
-python3 for code
+## prototype
+- onlineDB
+- oAuth login
 
 ### data
 #### version 1
