@@ -15,7 +15,7 @@ import time, datetime
 import threading
 import json
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QLayout
-
+from PyQt5.QtWidgets import QProgressBar, QGridLayout
 class App(QWidget):
 
     buttonList = list()
@@ -72,24 +72,35 @@ class App(QWidget):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
 
+        mTopGrid = QGridLayout()
+        self.setLayout(mTopGrid)
+
         #button to stop thUpdate
         btnQuit = QPushButton('quit', self)
-        btnQuit.move(1,1)
+        mTopGrid.addWidget(btnQuit, 0,0)
         btnQuit.clicked.connect(self.threadStop)
 
         #button to start thUpdate
         btnStart = QPushButton('start', self)
-        btnStart.move(60,1)
+        mTopGrid.addWidget(btnStart, 0,1)
         btnStart.clicked.connect(self.threadUpdate)
 
         #button to save plan
         buttonSave = QPushButton('save', self)
-        buttonSave.move(120,1)
+        mTopGrid.addWidget(buttonSave, 0,2)
         buttonSave.clicked.connect(self.savePlan)
 
         buttonLoad = QPushButton('load', self)
-        buttonLoad.move(180,1)
+        mTopGrid.addWidget(buttonLoad, 0,3)
         buttonLoad.clicked.connect(self.loadPlan)
+
+
+        self.progress = QProgressBar(self)
+        mTopGrid.addWidget(self.progress, 1,0)
+        self.progress.setGeometry(10,250,300,50)
+        self.progress.setMaximum(100)
+
+
 
         self.work = QLabel(self)
         self.work.setText('')
@@ -131,8 +142,22 @@ class App(QWidget):
         now = time.localtime( )
         actItem = now.tm_wday*24  + now.tm_hour
         workStr = str('act work: ') + str(self.buttonList[actItem].getColor())
+
+        #check if more than one block is left
+        showTimeBlock = 0
+        showTimeActItem = actItem
+
+        while self.buttonList[showTimeActItem+1].getColor() == self.buttonList[showTimeActItem].getColor():
+            showTimeBlock += 1
+            showTimeActItem += 1
+
+        showTimeTotal = (showTimeBlock+1) * 60
+        showTimeLeft  = ((showTimeBlock*60) + 59-now.tm_min)
         currentTimeStr = str(now.tm_hour) + ':' + str(now.tm_min) + ':' + str(now.tm_sec)
-        countDownStr = str(59-now.tm_min) + ':' + str(59-now.tm_sec)
+        countDownStr = str(showTimeLeft) + ':' + str(59-now.tm_sec)
+
+        self.progress.setValue( 100 -  (showTimeLeft / showTimeTotal)*100 )
+
         self.currentTime.setText('current time: ' + currentTimeStr)
         self.countdownTime.setText('time left: ' + countDownStr)
         self.work.setText(workStr)
