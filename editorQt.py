@@ -45,10 +45,7 @@ class App(QWidget):
             self.btn.setStyleSheet("color: pink; background-color: " + self.COLORS[self.actualColor])
             self.btn.setToolTip(str(day*24 + hour))
             hboxTable.addWidget(self.btn)
-            #self.btn.move(10+self.hour*40, 40+day*20)
-
             self.btn.setFixedWidth(30)
-            #self.btn.setFixedHeight(15)
             self.btn.clicked.connect( self.on_click )
 
         def on_click(self):
@@ -85,7 +82,6 @@ class App(QWidget):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
 
-        #button to stop thUpdate
         buttonQuit = QPushButton('quit', self)
         buttonStart = QPushButton('start', self)
         buttonSave = QPushButton('save', self)
@@ -97,11 +93,9 @@ class App(QWidget):
 
         self.currentTime = QLabel(self)
         self.currentTime.setText('')
-        #self.currentTime.setFixedSize(300,20)
 
         self.countdownTime = QLabel(self)
         self.countdownTime.setText('')
-        #self.countdownTime.setFixedSize(300,20)
 
         buttonQuit.clicked.connect(self.threadStop)
         buttonStart.clicked.connect(self.threadUpdate)
@@ -152,6 +146,7 @@ class App(QWidget):
         workStr = str('act work: ') + str(self.buttonList[actItem].getColor())
 
         #check if more than one block is left
+        #todo check block in the past and add it to showTimeBlock
         showTimeBlock = 0
         showTimeActItem = actItem
         try:
