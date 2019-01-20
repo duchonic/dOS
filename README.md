@@ -22,7 +22,7 @@ size:
 # gui (front)
 ## pretotype
 - qt5
-![pic](doc/qt5_pretotype.png)
+![pic](doc/pretotype2.png)
 
 ## prototype
 - flask webpage
