@@ -21,8 +21,12 @@ size:
 
 # gui (front)
 ## pretotype
-- qt5
-![pic](doc/pretotype2.png)
+- sign in/out
+- stats weekly/monthly/yearly
+- edit blocks
+- PyQt5
+
+![pic](doc/pretotype3.png)
 
 ## prototype
 - flask webpage
