@@ -86,7 +86,7 @@ class MainWindow(QMainWindow):
         # QMessageBox.question(self, 'Message - pythonspot.com', "You typed: " + textboxValue, QMessageBox.Ok, QMessageBox.Ok)
 
         _editBlocks = str()
-        self.app_widget._blockStrings[0] = "blub"
+        self.app_widget._blockStrings['0'] = "blub"
         for item in self.app_widget._blockStrings:
             _editBlocks += str(item) + '\n'
         QMessageBox.about(self, "Blocks",  _editBlocks )

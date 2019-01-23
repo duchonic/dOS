@@ -14,7 +14,6 @@ class App(QWidget):
     currentTime = 0
     _planLoad = dict()
     _planSave = Counter()
-    _blockStrings = ["nothing", "sail", "learn", "sleep", "read", "play"]
     _DAYOFWEEK = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
 
     def __init__(self, parent):
@@ -28,16 +27,26 @@ class App(QWidget):
                 self._planLoad = json.load(readData)
                 print('read the dataLoad')
         except:
-                self._planLoad = dict()
-                self._planLoad[ str(datetime.datetime.utcnow().isocalendar()[0]) ] = dict()
+            self._planLoad = dict()
+            self._planLoad[ str(datetime.datetime.utcnow().isocalendar()[0]) ] = dict()
 
+        #open file with saved data
         try:
             with open('dataSave.json','r') as readData:
                 self._planSave = json.load(readData)
                 print('read the dataSave')
         except:
-                self._planSave = dict()
-                self._planSave[ str(datetime.datetime.utcnow().isocalendar()[0]) ]  = dict()
+            self._planSave = dict()
+            self._planSave[ str(datetime.datetime.utcnow().isocalendar()[0]) ]  = dict()
+
+        #open file with blockStrings
+        try:
+            with open('blockStrings.json', 'r') as readData:
+                self._blockStrings = json.load(readData)
+                print('read the blockStrings')
+        except:
+            self._blockStrings = dict()
+            self._blockStrings.update({'0':'nothing', '1':'learn', '2':'read', '3':'work', '4':'sail', '5':'play'})
 
         print(self._planSave)
 
@@ -60,11 +69,6 @@ class App(QWidget):
         self.b1.setChecked(False)
         self.b2.setChecked(True)
 
-        #self.b1..connect(lambda:self.btnstate(self.b1))
-        #self.b2.setCheckState(True)
-        #self.b2.stateChanged.connect(lambda:self.btnstate(self.b2))
-
-
         _vbox = QVBoxLayout()
 
         _vbox.addWidget(self.b1)
@@ -84,8 +88,8 @@ class App(QWidget):
 
             _vbox.addLayout(_hboxTable)
 
-        _vbox.addWidget(self.work)
         _vbox.addWidget(self.currentTime)
+        _vbox.addWidget(self.work)
         _vbox.addWidget(self.countdownTime)
         _vbox.addWidget(self.progress)
 
@@ -105,7 +109,7 @@ class App(QWidget):
     def calcItemPos(self, _day, _hour):
         return (_day*24)+_hour
 
-    def showTime(self):
+    def showTime(self, full):
         _now = time.localtime()
         _actItem = self.calcItemPos(_now.tm_wday, _now.tm_hour)
         _showTimeBlockLeft = 0
@@ -133,23 +137,30 @@ class App(QWidget):
 
         _showTimeTotal = (_showTimeBlockLeft+1 + _showTimeBlockPast)*60
         _showTimeLeft  = ((_showTimeBlockLeft*60) + 59-_now.tm_min)
-        _workStr = str('dOS activity: ') + self._blockStrings[self.buttonList[_actItem].getColor()]
+        _workStr = str('dOS activity: ') + self._blockStrings[ self.buttonList[_actItem].getColorStr() ]
         _currentTimeStr = str(_now.tm_hour).zfill(2) + ':' + str(_now.tm_min).zfill(2) + ':' + str(_now.tm_sec).zfill(2)
         _countDownStr = str(_showTimeLeft).zfill(2) + ':' + str(59-_now.tm_sec).zfill(2)
 
-        self.progress.setValue(100-(_showTimeLeft/_showTimeTotal)*100)
-        self.work.setText(_workStr)
-        self.currentTime.setText('current time: ' + _currentTimeStr)
-        self.countdownTime.setText('time left: ' + _countDownStr)
+        if full:
+            self.progress.setValue(100-(_showTimeLeft/_showTimeTotal)*100)
+            self.work.setText(_workStr)
+            self.currentTime.setText('current time: ' + _currentTimeStr)
+            self.countdownTime.setText('time left: ' + _countDownStr)
+        else:
+            self.progress.setValue(0)
+            self.work.setText("")
+            self.currentTime.setText('current time: ' + _currentTimeStr)
+            self.countdownTime.setText("")
 
     def calcSeconds(self):
         _now = time.localtime()
         _actItem = self.calcItemPos(_now.tm_wday, _now.tm_hour)
         _Time = datetime.datetime.utcnow().isocalendar()
+
         try:
-            self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColor()] ] += 1
+            self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColorStr()] ] += 1
         except:
-            self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColor()] ] = 0
+            self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColorStr()] ] = 0
 
     def getSeconds(self):
         _now = time.localtime()
@@ -157,10 +168,10 @@ class App(QWidget):
         _Time = datetime.datetime.utcnow().isocalendar()
 
         try:
-            return self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColor()] ]
+            return self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColorStr()] ]
         except:
-            self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColor()] ] = 0
-            return self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColor()] ]
+            self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColorStr()] ] = 0
+            return self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColorStr()] ]
 
     def threadUpdate(self):
         self._thUpdate = threading.Timer(1, self.threadUpdate)
@@ -168,7 +179,9 @@ class App(QWidget):
 
         if self.b1.isChecked():
             self.calcSeconds()
-            self.showTime()
+            self.showTime(1)
+        else:
+            self.showTime(0)
 
     def getPlan(self):
         _plan = dict()
@@ -192,3 +205,6 @@ class App(QWidget):
         with open('dataSave.json', 'w') as wrData:
             print('saved dataSave')
             json.dump(self._planSave, wrData, indent=2, ensure_ascii=False)
+        with open('blockStrings.json', 'w') as wrData:
+            print('saved blockStrings')
+            json.dump(self._blockStrings, wrData, indent=2, ensure_ascii=False)

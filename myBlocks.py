@@ -31,3 +31,5 @@ class Blocks():
 
     def getColor(self):
         return self.actualColor
+    def getColorStr(self):
+        return str(self.actualColor)
