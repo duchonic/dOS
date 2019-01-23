@@ -12,6 +12,7 @@ manage weekly hours with lego technic bricks (prototype)
 
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QAction
+from PyQt5.QtWidgets import QMessageBox, QLineEdit
 from PyQt5.QtGui import QIcon
 
 from myApp import App
@@ -61,11 +62,34 @@ class MainWindow(QMainWindow):
         self._statusbar = self.statusBar()
         self._statusbar.showMessage('running')
 
+        #self.textbox = QLineEdit(self)
+        #self.textbox.move(20, 20)
+        #self.textbox.resize(280,40)
+
     def showStats(self):
         self._statusbar.showMessage('showStats ...')
+        print(self.app_widget._planSave)
+
+        _statString = str()
+
+        for item in self.app_widget._planSave:
+            _statString += str(item) + '\n'
+
+            for entry in self.app_widget._planSave[item]:
+                _statString += '-' + str(entry) + ':' + str(self.app_widget._planSave[item][entry]) + '\n'
+        QMessageBox.about(self, "Stats",  _statString )
 
     def editBlocks(self):
-        self._statusbar.showMessage('editBlocks ...')
+        # textboxValue = self.textbox.text()
+        # QMessageBox.question(self, 'Message - pythonspot.com', "You typed: " + textboxValue, QMessageBox.Ok, QMessageBox.Ok)
+        # self.textbox.setText("")
+        # QMessageBox.question(self, 'Message - pythonspot.com', "You typed: " + textboxValue, QMessageBox.Ok, QMessageBox.Ok)
+
+        _editBlocks = str()
+        self.app_widget._blockStrings[0] = "blub"
+        for item in self.app_widget._blockStrings:
+            _editBlocks += str(item) + '\n'
+        QMessageBox.about(self, "Blocks",  _editBlocks )
 
     def closeEvent(self, event):
         print('closed with red cross')

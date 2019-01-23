@@ -7,7 +7,7 @@ class Blocks():
     actualColor = 0
 
     #imutable colors, this should be dynamic an controlled from the widget
-    COLORS = ("grey", "red", "yellow", "black", "blue")
+    COLORS = ("grey", "red", "yellow", "black", "blue", "green")
 
     def __init__(self, day, hour, form, color, hboxTable):
 
@@ -28,7 +28,6 @@ class Blocks():
         if self.actualColor >= len(self.COLORS):
             self.actualColor = 0
         self.btn.setStyleSheet("color: pink; background-color: " + self.COLORS[self.actualColor])
-        self.form.show()
 
     def getColor(self):
         return self.actualColor

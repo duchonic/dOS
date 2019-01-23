@@ -1,8 +1,9 @@
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QLabel, QProgressBar, QHBoxLayout, QVBoxLayout
-
+from PyQt5.QtWidgets import QCheckBox, QGroupBox, QRadioButton
 from myBlocks import Blocks
 import threading, sys, time, datetime
+from collections import Counter
 
 import json
 
@@ -11,8 +12,10 @@ class App(QWidget):
     buttonList = list()
     _thUpdate = 0
     currentTime = 0
-    mPlan = dict()
-    _blockStrings = ["nothing", "sail", "learn", "sleep", "read"]
+    _planLoad = dict()
+    _planSave = Counter()
+    _blockStrings = ["nothing", "sail", "learn", "sleep", "read", "play"]
+    _DAYOFWEEK = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
 
     def __init__(self, parent):
         super(App, self).__init__(parent)
@@ -21,13 +24,22 @@ class App(QWidget):
     def initUI(self):
         #open file with data for blocks
         try:
-            with open('data.json','r') as readData:
-                self.mPlan = json.load(readData)
-                print('read the data')
+            with open('dataLoad.json','r') as readData:
+                self._planLoad = json.load(readData)
+                print('read the dataLoad')
         except:
-                self.mPlan = dict()
-                for year in range(2019,2022):
-                    self.mPlan[year] = dict()
+                self._planLoad = dict()
+                self._planLoad[ str(datetime.datetime.utcnow().isocalendar()[0]) ] = dict()
+
+        try:
+            with open('dataSave.json','r') as readData:
+                self._planSave = json.load(readData)
+                print('read the dataSave')
+        except:
+                self._planSave = dict()
+                self._planSave[ str(datetime.datetime.utcnow().isocalendar()[0]) ]  = dict()
+
+        print(self._planSave)
 
         self.work = QLabel(self)
         self.work.setText('')
@@ -35,22 +47,41 @@ class App(QWidget):
         self.currentTime = QLabel(self)
         self.currentTime.setText('')
         self.countdownTime = QLabel(self)
+        self.dayofweek = [QLabel(self) for i in range(7)]
         self.countdownTime.setText('')
         self.progress = QProgressBar(self)
         self.progress.setGeometry(10,250,300,50)
         self.progress.setMaximum(100)
 
+        self.groupBox = QGroupBox("Check")
+
+        self.b1 = QRadioButton("CheckIn")
+        self.b2 = QRadioButton("CheckOut")
+        self.b1.setChecked(False)
+        self.b2.setChecked(True)
+
+        #self.b1..connect(lambda:self.btnstate(self.b1))
+        #self.b2.setCheckState(True)
+        #self.b2.stateChanged.connect(lambda:self.btnstate(self.b2))
+
+
         _vbox = QVBoxLayout()
+
+        _vbox.addWidget(self.b1)
+        _vbox.addWidget(self.b2)
 
         for day in range(7):
             _hboxTable = QHBoxLayout()
             for hour in range(24):
                 try:
                     mTime = datetime.datetime.utcnow().isocalendar()
-                    color = self.mPlan[str(mTime[0])][str(mTime[1])].get(str(day*24+hour))
+                    color = self._planLoad[str(mTime[0])][str(mTime[1])].get(str(day*24+hour))
                 except:
                     color = 0
                 self.buttonList.append( Blocks(day, hour, self, color, _hboxTable) )
+            self.dayofweek[day].setText(self._DAYOFWEEK[day])
+            _hboxTable.addWidget(self.dayofweek[day])
+
             _vbox.addLayout(_hboxTable)
 
         _vbox.addWidget(self.work)
@@ -62,7 +93,14 @@ class App(QWidget):
 
         self._thUpdate = threading.Timer(1, self.threadUpdate)
         self._thUpdate.start()
-        #self.show()
+
+    def btnstate(self, b):
+        if b.text() == "CheckIn":
+            if b.isChecked() == True:
+                print(b.text() + "is selected")
+        if b.text() == "CheckOut":
+            if b.isChecked() == True:
+                print(b.text() + "is selected")
 
     def calcItemPos(self, _day, _hour):
         return (_day*24)+_hour
@@ -103,12 +141,34 @@ class App(QWidget):
         self.work.setText(_workStr)
         self.currentTime.setText('current time: ' + _currentTimeStr)
         self.countdownTime.setText('time left: ' + _countDownStr)
-        self.show()
+
+    def calcSeconds(self):
+        _now = time.localtime()
+        _actItem = self.calcItemPos(_now.tm_wday, _now.tm_hour)
+        _Time = datetime.datetime.utcnow().isocalendar()
+        try:
+            self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColor()] ] += 1
+        except:
+            self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColor()] ] = 0
+
+    def getSeconds(self):
+        _now = time.localtime()
+        _actItem = self.calcItemPos(_now.tm_wday, _now.tm_hour)
+        _Time = datetime.datetime.utcnow().isocalendar()
+
+        try:
+            return self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColor()] ]
+        except:
+            self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColor()] ] = 0
+            return self._planSave[str(_Time[0])][ self._blockStrings[ self.buttonList[_actItem].getColor()] ]
 
     def threadUpdate(self):
         self._thUpdate = threading.Timer(1, self.threadUpdate)
         self._thUpdate.start()
-        self.showTime()
+
+        if self.b1.isChecked():
+            self.calcSeconds()
+            self.showTime()
 
     def getPlan(self):
         _plan = dict()
@@ -118,12 +178,17 @@ class App(QWidget):
                 _plan.update({ mItem : self.buttonList[mItem].getColor() })
         return _plan
 
+
     def exitWidget(self):
         #kill thread
         self._thUpdate.cancel()
         #save stuff
         _Time = datetime.datetime.utcnow().isocalendar()
-        self.mPlan[str(_Time[0])][str(_Time[1])] = self.getPlan()
-        with open('data.json', 'w') as wrData:
-            print('saved plan')
-            json.dump(self.mPlan, wrData, indent=2, ensure_ascii=False)
+        self._planLoad[str(_Time[0])][str(_Time[1])] = self.getPlan()
+        with open('dataLoad.json', 'w') as wrData:
+            print('saved dataLoad')
+            json.dump(self._planLoad, wrData, indent=2, ensure_ascii=False)
+        #self._planSave[str(_Time[0])] = self.getHours()
+        with open('dataSave.json', 'w') as wrData:
+            print('saved dataSave')
+            json.dump(self._planSave, wrData, indent=2, ensure_ascii=False)
