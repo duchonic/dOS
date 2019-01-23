@@ -1,4 +1,7 @@
 from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QHBoxLayout
+
+import unittest
 
 class Blocks():
 
@@ -33,3 +36,18 @@ class Blocks():
         return self.actualColor
     def getColorStr(self):
         return str(self.actualColor)
+
+
+class MyBlockTestCase(unittest.TestCase):
+
+    def testColors(self):
+        self.assertEqual((1+1),2)
+        day = 4
+        hour = 12
+        color = 3
+        _hboxTable = QHBoxLayout()
+        testBlock = Blocks(day,hour, self ,color,_hboxTable)
+
+
+if __name__ == '__main__':
+    unittest.main()

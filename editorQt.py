@@ -17,6 +17,7 @@ from PyQt5.QtGui import QIcon
 
 from myApp import App
 import sys
+import unittest
 
 class MainWindow(QMainWindow):
 
@@ -77,6 +78,7 @@ class MainWindow(QMainWindow):
 
             for entry in self.app_widget._planSave[item]:
                 _statString += '-' + str(entry) + ':' + str(self.app_widget._planSave[item][entry]) + '\n'
+
         QMessageBox.about(self, "Stats",  _statString )
 
     def editBlocks(self):
@@ -96,6 +98,7 @@ class MainWindow(QMainWindow):
         self.app_widget.exitWidget()
 
 if __name__ == '__main__':
+
     app = QApplication(sys.argv)
     win = MainWindow()
     win.show()

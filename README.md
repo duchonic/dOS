@@ -42,6 +42,7 @@ size:
 - oAuth login
 
 ### data
+
 #### version 1
 the data is stored in data.json
 - 2019, 3 -> year, calendarweek
