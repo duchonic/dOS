@@ -1,11 +1,11 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtWidgets import QLabel, QProgressBar, QHBoxLayout, QVBoxLayout
 from PyQt5.QtWidgets import QCheckBox, QGroupBox, QRadioButton
 from myBlocks import Blocks
 import threading, sys, time, datetime
 from collections import Counter
 
-import json
+import json, unittest
 
 class App(QWidget):
 
@@ -208,3 +208,15 @@ class App(QWidget):
         with open('blockStrings.json', 'w') as wrData:
             print('saved blockStrings')
             json.dump(self._blockStrings, wrData, indent=2, ensure_ascii=False)
+
+class MyAppTestCase(unittest.TestCase):
+
+    def testApp(self):
+        assert True
+        app = QApplication(sys.argv)
+        testApp = App(parent=None)
+
+        print(testApp._planSave)
+
+if __name__ == '__main__':
+    unittest.main()

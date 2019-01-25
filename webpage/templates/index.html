@@ -1,24 +1,56 @@
 <html>
    <head>
-     <script type=text/javascript src="{{ url_for('static', filename='hello.js') }}"></script>
+     <script type="text/javascript" src="{{ url_for('static', filename='hello.js') }}"></script>
+     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+     <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
    </head>
-
-   <h1>h1 heading</h1>
-   <h2>h2 heading</h2>
-   <h3>h3 heading</h3>
 
    <body>
 
-      <h4>h4 heading</h4>
-      <h5>h5 heading</h5>
+      <header>
+         <h1>dOS</h1>
+      </header>
 
-      <input type="checkbox" onclick="check1()"/><br>
-      <input type="checkbox" onclick="check2()"/><br>
-      <input type="email" value="input@test.io"/><br>
-      
-      <input type = "button" onclick = "sayHello()" value = "Hello" />
-      <input type = "button" onclick = "sayCheck()" value = "Check" />
-      <input type = "button" onclick = "sayBye()" value = "Bye" />
+      <section class="nes-container with title">
+        <h2 class="title">Buttons</h2>
+              <div>
+                <button type="button" class="nes-btn is-success">Success</button>
+                <button type="button" class="nes-btn" onclick="sayHello()">Hello</button>
+                <button type="button" class="nes-btn" onclick="sayCheck()">Check</button>
+                <button type="button" class="nes-btn" onclick="sayBye()">Bye</button>
+                <button type="button" class="nes-btn" onclick="sayHello()">Exit</button>
+             </div>
+        </section>
+      </section>
+      <section class="nes-container with title">
+      <h2 class="title">Buttons</h2>
+            <div>
+              <button type="button" class="nes-btn is-success">01</button>
+              <button type="button" class="nes-btn">06</button>
+              <button type="button" class="nes-btn">07</button>
+              <button type="button" class="nes-btn">08</button>
+              <button type="button" class="nes-btn">09</button>
+              <button type="button" class="nes-btn">10</button>
+              <button type="button" class="nes-btn">11</button>
+              <button type="button" class="nes-btn">12</button>
+              <button type="button" class="nes-btn">13</button>
+              <button type="button" class="nes-btn">14</button>
+              <button type="button" class="nes-btn">15</button>
+              <button type="button" class="nes-btn">16</button>
+              <button type="button" class="nes-btn">17</button>
+           </div>
+      </section>
+    </section>
+      <section class="nes-container with-title">
+        <h2 class="title">Progress</h2>
+        <progress class="nes-progress" value="90" max="100"></progress>
+        <progress class="nes-progress is-primary" value="80" max="100"></progress>
+        <progress class="nes-progress is-success" value="50" max="100"></progress>
+        <progress class="nes-progress is-warning" value="30" max="100"></progress>
+        <progress class="nes-progress is-error" value="10" max="100"></progress>
+        <progress class="nes-progress is-pattern" value="50" max="100"></progress>
+      </section>
+
    </body>
 
 </html>
